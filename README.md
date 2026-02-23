@@ -54,7 +54,7 @@ else:
 
 ---
 
-# ⚙️ 2. Parâmetros do Sistema OFDM
+# ⚙️ 3. Parâmetros do Sistema OFDM
 
 | Parâmetro | Valor | Descrição |
 |-----------|--------|-----------|
@@ -76,7 +76,7 @@ J = 2                                     # Ordem do modelo polinomial do modula
 
 ---
 
-# 🧠 3. Funções de Apoio
+# 🧠 4. Funções de Apoio
 
 ```python
 def suavizar_espectro(vetor_db, janela=20):
@@ -124,7 +124,7 @@ def calcular_mer(simbolos_est, simbolos_ref):
 
 ---
 
-# 📊 4. Geração de Dados
+# 📊 4. Carregando os Coeficientes do Modelo Polinomial
 
 ```python
 # --- GERAÇÃO DE DADOS E CANAL (CENÁRIO SEM DPD) ---
@@ -144,8 +144,10 @@ coef_mzm = np.fromfile("coef", dtype=np.complex64)
 
 print(f"Coeficientes carregados com sucesso!: {coef_mzm}")
 
-
-
+```
+---
+# 📊 5. Geração dos dados
+```python
 # Vetores para armazenar o sinal completo
 sinal_tx_total = np.zeros(NUM_BLOCOS * K, dtype=complex)
 
@@ -169,7 +171,7 @@ sinal_recebido = canal_awgn(sinal_distorcido, SNR_DB, np.mean(np.abs(sinal_tx_to
 
 ---
 
-# 🤖 5. Arquitetura da Rede Neural (DPD)
+# 🤖 6. Arquitetura e Treinamento da Rede Neural (DPD)
 
 ```python
 X_train = np.c_[sinal_recebido.real, sinal_recebido.imag]
@@ -195,29 +197,90 @@ model_dpd.fit(
 
 ---
 
-# 🏁 6. Validação
+# 🏁 7. Teste e Validação
 
 ```python
-sinal_entrada_mlp = np.c_[
-    sinal_ofdm_teste.real,
-    sinal_ofdm_teste.imag
-]
+print("\n--- Avaliando Performance ---")
+p_teste_dbm = 15 
+p_teste_lin = 10**(p_teste_dbm/10) * 1e-3
 
-sinal_pre_distorcido_raw = model_dpd.predict(
-    sinal_entrada_mlp,
-    verbose=0
-)
+indices_teste = np.random.randint(0, MOD_ORDER, size=len(SUBPORT_ATIVAS))
+qam_teste, modem_obj = modular_qam(indices_teste, MOD_ORDER)
+sinal_ofdm_teste = np.fft.ifft(mapear_ofdm(qam_teste, SUBPORT_ATIVAS, K)) * np.sqrt(K)
+sinal_ofdm_teste *= np.sqrt(p_teste_lin / np.mean(np.abs(sinal_ofdm_teste)**2))
 
-sinal_pre_distorcido = (
-    sinal_pre_distorcido_raw[:, 0]
-    + 1j * sinal_pre_distorcido_raw[:, 1]
-)
+# 1. Caso SEM DPD
+saida_sem_dpd = modelo_mzm(coef_mzm, sinal_ofdm_teste, J)
 
-saida_com_dpd = modelo_mzm(
-    coef_mzm,
-    sinal_pre_distorcido,
-    J
-)
+# 2. Caso COM DPD
+sinal_entrada_mlp = np.c_[sinal_ofdm_teste.real, sinal_ofdm_teste.imag]
+sinal_pre_distorcido_raw = model_dpd.predict(sinal_entrada_mlp, verbose=0)
+sinal_pre_distorcido = sinal_pre_distorcido_raw[:,0] + 1j*sinal_pre_distorcido_raw[:,1]
+saida_com_dpd = modelo_mzm(coef_mzm, sinal_pre_distorcido, J)
+
+# --- DEMODULAÇÃO E CÁLCULO DE MÉTRICAS ---
+def processar_receptor(sinal_rx, ref_qam):
+    rx_f = np.fft.fft(sinal_rx) / np.sqrt(K)
+    qam_rx = rx_f[SUBPORT_ATIVAS]
+    qam_rx *= np.sqrt(np.mean(np.abs(ref_qam)**2) / np.mean(np.abs(qam_rx)**2))
+    evm_val = calcular_evm(qam_rx, ref_qam)
+    mer_val = calcular_mer(qam_rx, ref_qam)
+    return qam_rx, evm_val, mer_val
+
+qam_sem, evm_sem, mer_sem = processar_receptor(saida_sem_dpd, qam_teste)
+qam_com, evm_com, mer_com = processar_receptor(saida_com_dpd, qam_teste)
+```
+
+---
+# 🏁 8. Análise Espectral
+
+```python
+f_ref, p_ref = welch(sinal_ofdm_teste, fs=1.0, window='hann', nperseg=K, return_onesided=False)
+f_sem, p_sem = welch(saida_sem_dpd, fs=1.0, window='hann', nperseg=K, return_onesided=False)
+f_com, p_com = welch(saida_com_dpd, fs=1.0, window='hann', nperseg=K, return_onesided=False)
+
+# Suavização e centralização (Janela aumentada para suavizar mais)
+db_ref = np.fft.fftshift(suavizar_espectro(10*np.log10(p_ref + 1e-12), janela=41))
+db_sem = np.fft.fftshift(suavizar_espectro(10*np.log10(p_sem + 1e-12), janela=41))
+db_com = np.fft.fftshift(suavizar_espectro(10*np.log10(p_com + 1e-12), janela=41))
+f_plot = np.fft.fftshift(f_sem)
+```
+
+---
+# 🏁 9. Plotando os Resultados
+
+```python
+plt.figure(figsize=(12, 10))
+
+# Plot 1: Constelação Sem DPD (Topo Esquerda)
+plt.subplot(221)
+plt.scatter(qam_sem.real, qam_sem.imag, s=5, label=f'Sem DPD ({evm_sem:.1f}%)')
+plt.title("Constelação: Sem DPD")
+plt.grid(); plt.legend(loc='upper right')
+
+# Plot 2: Constelação Com DPD (Topo Direita)
+plt.subplot(222)
+plt.scatter(qam_com.real, qam_com.imag, s=5, color='green', label=f'Com DPD ({evm_com:.1f}%)')
+plt.title("Constelação: Com MLP-DPD")
+plt.grid(); plt.legend(loc='upper right')
+
+# Plot 3: Densidade Espectral de Potência (Base - Ocupando as duas colunas)
+plt.subplot(212)
+plt.plot(f_plot, db_ref, color='black', label='Ideal (Referência)', linestyle='--', alpha=0.6)
+plt.plot(f_plot, db_sem, label='Sem DPD (Distorcido)', alpha=0.8)
+plt.plot(f_plot, db_com, label='Com MLP-DPD (Linearizado)', color='green', linewidth=2)
+plt.title("Densidade Espectral de Potência (Suavizada)")
+plt.xlabel("Frequência Normalizada")
+plt.ylabel("Magnitude (dB)")
+plt.ylim(np.max(db_ref)-60, np.max(db_ref)+5)
+plt.grid(); plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+print(f"RESULTADO FINAL ({p_teste_dbm} dBm):")
+print(f"Sem DPD -> MER: {mer_sem:.2f} dB | EVM: {evm_sem:.2f}%")
+print(f"Com DPD -> MER: {mer_com:.2f} dB | EVM: {evm_com:.2f}%")
 ```
 
 ---
@@ -226,10 +289,9 @@ saida_com_dpd = modelo_mzm(
 
 1. Abra o Google Colab  
 2. Copie os blocos em células separadas  
-3. Faça upload do arquivo `coef`  
-4. Execute em ordem  
+3. Execute em ordem  
 
 ---
 
-> 💡 **Dica Didática:**  
-Peça aos alunos para alterar o número de neurônios ou trocar `relu` por `tanh` e observar o impacto na DEP.
+> 💡 **Exercicios para casa:**  
+Altere o número de neurônios ou trocar `relu` por `tanh` e observar o impacto no desempenho.
