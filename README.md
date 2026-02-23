@@ -201,7 +201,7 @@ model_dpd.fit(
 
 ```python
 print("\n--- Avaliando Performance ---")
-p_teste_dbm = 15 
+p_teste_dbm = 10 
 p_teste_lin = 10**(p_teste_dbm/10) * 1e-3
 
 indices_teste = np.random.randint(0, MOD_ORDER, size=len(SUBPORT_ATIVAS))
