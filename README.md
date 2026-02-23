@@ -237,7 +237,7 @@ Um **preambulo conhecido** é inserido no início do sinal transmitido, permitin
 
 Para estimar `h`, utilizamos a Equação Normal dos Mínimos Quadrados:
 
-<img src="/figuras/coeficientes.png" width="200px"> 
+<img src="/figuras/coeficientes.png" width="150px"> 
 
 
 Onde:
