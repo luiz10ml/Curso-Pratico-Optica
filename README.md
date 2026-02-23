@@ -64,22 +64,47 @@ J = 2                                     # Ordem do modelo polinomial do modula
 # 🧠 3. Funções de Apoio
 
 ```python
-def suavizar_espectro(vetor_db, janela=41):
-    """Aplica média móvel para suavizar a DEP."""
+def suavizar_espectro(vetor_db, janela=20):
+    """Aplica uma média móvel robusta para deixar o gráfico da DEP bem suave."""
     return np.convolve(vetor_db, np.ones(janela)/janela, mode='same')
 
+def modular_qam(bits_ou_indices, ordem):
+    """Realiza a modulação QAM e normaliza a potência unitária."""
+    modem = QAMModem(ordem, bin_input=False, soft_decision=False, bin_output=False)
+    simbolos = modem.modulate(bits_ou_indices)
+    potencia_media = np.mean(np.abs(simbolos)**2)
+    simbolos_norm = simbolos * np.sqrt(1 / potencia_media)
+    return simbolos_norm, modem
+
+def mapear_ofdm(simbolos_qam, indices_ativos, tamanho_fft):
+    """Aloca os símbolos QAM nas subportadoras específicas da FFT."""
+    espectro = np.zeros(tamanho_fft, dtype=complex)
+    espectro[indices_ativos] = simbolos_qam
+    return espectro
+
+def canal_awgn(sinal, snr_db, pot_referencia):
+    """Adiciona ruído gaussiano branco (AWGN) baseado na SNR desejada."""
+    sigma2 = pot_referencia * 10**(-snr_db/10)
+    ruido = np.sqrt(sigma2/2) * (np.random.randn(*sinal.shape) + 1j*np.random.randn(*sinal.shape))
+    return sinal + ruido
+
 def modelo_mzm(coeficientes, sinal_in, ordem):
-    """Modelo polinomial para simular distorção do MZM."""
+    """Representa o comportamento não-linear do Modulador Mach-Zehnder."""
+    # Matriz onde cada coluna é o sinal elevado a uma potência ímpar (comum em RF)
     X = np.column_stack([sinal_in * np.abs(sinal_in)**k for k in range(ordem)])
     return X.dot(coeficientes)
 
 def calcular_evm(simbolos_est, simbolos_ref):
-    """Calcula Error Vector Magnitude."""
+    """Calcula o Error Vector Magnitude em porcentagem."""
     erro = simbolos_est - simbolos_ref
-    return np.sqrt(
-        np.mean(np.abs(erro)**2) /
-        np.mean(np.abs(simbolos_ref)**2)
-    ) * 100
+    return np.sqrt(np.mean(np.abs(erro)**2) / np.mean(np.abs(simbolos_ref)**2)) * 100
+
+def calcular_mer(simbolos_est, simbolos_ref):
+    """Calcula o Modulation Error Ratio em dB."""
+    erro = simbolos_est - simbolos_ref
+    p_sinal = np.mean(np.abs(simbolos_ref)**2)
+    p_erro = np.mean(np.abs(erro)**2)
+    return 10 * np.log10(p_sinal / p_erro)
 ```
 
 ---
