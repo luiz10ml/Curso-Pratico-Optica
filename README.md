@@ -14,7 +14,7 @@ Este repositório contém o material didático para implementação de uma **Pre
 
 # 📖 1. Introdução e Setup
 
-<img src="/figuras/rofDiagram.png" width="300px"> 
+<img src="/figuras/rofDiagram.png" width="900px"> 
 
 Preparação do ambiente no Google Colab:
 
