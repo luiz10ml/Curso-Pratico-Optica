@@ -16,6 +16,138 @@ Este repositório contém o material didático para implementação de uma **Pre
 
 <img src="/figuras/rofDiagram.png" width="900px"> 
 
+
+O diagrama acima apresenta duas formas equivalentes de representar um sistema Radio-over-Fiber (RoF).
+
+À esquerda, temos o sistema físico real, composto por:
+
+Transmissor SDR (Tx)
+
+Amplificador de potência (PA)
+
+Laser (LD)
+
+Modulador Mach-Zehnder (MZM)
+
+Caminho óptico
+
+Fotodiodo (PD)
+
+Receptor (Rx)
+
+Nesse arranjo, o sinal elétrico gerado pelo transmissor é amplificado e aplicado ao MZM, que converte o sinal elétrico em modulação óptica. Após propagação no domínio óptico, o fotodiodo reconverte o sinal para o domínio elétrico.
+
+Durante esse processo, surgem não-linearidades, principalmente associadas ao PA e ao MZM. Como consequência, o sinal de saída não é uma réplica perfeita do sinal de entrada.
+
+À direita, temos uma representação matemática equivalente do mesmo sistema.
+
+Em vez de modelar cada bloco físico individualmente, todo o enlace RoF é representado por um modelo polinomial sem memória, da forma:
+
+𝑧
+𝑛
+=
+∑
+𝑗
+=
+0
+𝐽
+−
+1
+ℎ
+𝑗
+∣
+𝑣
+𝑛
+∣
+𝑗
+𝑣
+𝑛
+z
+n
+	​
+
+=
+j=0
+∑
+J−1
+	​
+
+h
+j
+	​
+
+∣v
+n
+	​
+
+∣
+j
+v
+n
+	​
+
+
+onde:
+
+𝑣
+𝑛
+v
+n
+	​
+
+ é a amostra de entrada do sistema
+
+𝑧
+𝑛
+z
+n
+	​
+
+ é a amostra de saída
+
+ℎ
+𝑗
+h
+j
+	​
+
+ são os coeficientes complexos do modelo
+
+𝐽
+J é a ordem do polinômio
+
+“Sem memória” significa que a saída no instante 
+𝑛
+n depende apenas da entrada naquele mesmo instante — não há dependência de amostras passadas.
+
+Se os coeficientes 
+ℎ
+𝑗
+h
+j
+	​
+
+ forem estimados corretamente a partir de medições reais, esse modelo consegue reproduzir com alta fidelidade o comportamento do sistema físico completo.
+
+🎯 Por que usar um modelo em vez do sistema físico?
+
+Modelar o sistema traz vantagens fundamentais, especialmente em ambiente acadêmico:
+
+Permite gerar amostras de saída ilimitadas sem necessidade de laboratório.
+
+Reduz drasticamente o custo, pois equipamentos ópticos são caros.
+
+Permite repetir experimentos com total controle e reprodutibilidade.
+
+Facilita o treinamento de algoritmos de Predistorção Digital (DPD).
+
+Permite explorar diferentes níveis de não-linearidade apenas alterando os coeficientes.
+
+Em outras palavras, o modelo substitui um sistema físico complexo por uma representação matemática compacta, viabilizando simulações, testes e desenvolvimento de algoritmos de forma rápida e acessível.
+
+É exatamente esse modelo que será utilizado neste curso para treinar uma rede neural MLP capaz de realizar a Predistorção Digital (DPD) e compensar os efeitos não-lineares do modulador.
+
+
 Preparação do ambiente no Google Colab:
 
 ```python
