@@ -204,6 +204,52 @@ def calcular_mer(simbolos_est, simbolos_ref):
 
 # 📊 5. Carregando os Coeficientes do Modelo Polinomial
 
+<img src="/figuras/data.png" width="900px"> 
+---
+
+## 🧪 Coleta de Dados Experimentais
+
+A figura acima mostra o setup experimental utilizado para a coleta de dados do sistema **RoF**.
+
+O objetivo principal do experimento foi coletar dois conjuntos de amostras:
+
+- 🔹 **Sinal de entrada sem distorção (TX Data)**  
+- 🔹 **Sinal de saída distorcido (RX Data)**  
+
+O sinal transmitido pelo SDR é aplicado ao PA e ao Modulador Mach-Zehnder (MZM), propagando-se pelo enlace óptico.  
+No receptor, o fotodiodo converte novamente o sinal para o domínio elétrico, resultando em uma versão distorcida do sinal original.
+
+Esses dois sinais (entrada e saída) são armazenados para posterior modelagem do sistema.
+
+---
+
+## ⏱️ Alinhamento Temporal (Sincronização)
+
+Após a coleta, as sequências TX e RX não estão perfeitamente alinhadas no tempo devido a:
+
+- Atrasos do enlace
+- Atrasos de hardware
+- Processamento interno dos dispositivos
+
+Para corrigir isso, é necessário realizar **sincronização temporal** utilizando **correlação cruzada** entre o sinal transmitido e o sinal recebido.
+
+Um **preambulo conhecido** é inserido no início do sinal transmitido, permitindo realizar o alinhamento temporal.
+
+Para estimar `h`, utilizamos a Equação Normal dos Mínimos Quadrados:
+
+<img src="/figuras/coeficientes.png" width="300px"> 
+
+
+Onde:
+
+- `V^H` é a transposta conjugada de `V`
+
+- `h` é o vetor estimado de coeficientes
+
+Essa solução minimiza o erro quadrático médio entre o modelo e o sistema real.
+
+
+
 ```python
 # --- GERAÇÃO DE DADOS E CANAL (CENÁRIO SEM DPD) ---
 
