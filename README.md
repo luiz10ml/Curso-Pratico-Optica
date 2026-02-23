@@ -50,12 +50,13 @@ callback_dpd = tf.keras.callbacks.EarlyStopping(
 | J | 2 | Ordem da não-linearidade |
 
 ```python
-K = 2048
-NUM_BLOCOS = 10
-SUBPORT_ATIVAS = np.arange(-200, 201, 1)
-MOD_ORDER = 16
-SNR_DB = 45
-J = 2
+# --- CONFIGURAÇÕES DO SISTEMA ---
+K = 2048                                  # Número de subportadoras (Tamanho da FFT)
+NUM_BLOCOS = 10                           # Quantidade de blocos OFDM para processamento
+SUBPORT_ATIVAS = np.arange(-200, 201, 1)  # Espectro ocupado
+MOD_ORDER = 16                            # 16-QAM
+SNR_DB = 45                               # Relação Sinal-Ruído do canal
+J = 2                                     # Ordem do modelo polinomial do modulador (Não-linearidade)
 ```
 
 ---
