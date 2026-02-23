@@ -66,7 +66,10 @@ Onde:
 Significa que a saída no instante `n` depende apenas da entrada naquele mesmo instante.  
 Não há dependência de amostras anteriores (`v_{n-1}`, `v_{n-2}`, etc.).
 
-Se os coeficientes `h_j` forem corretamente estimados a partir de medições reais, esse modelo consegue reproduzir com alta fidelidade o comportamento do sistema físico completo.
+Se os coeficientes `h_j` forem corretamente estimados a partir de medições reais, esse modelo consegue reproduzir com alta fidelidade o comportamento do sistema físico completo, conforme ilustram as Figuras abaixo:
+
+<img src="/figuras/desempenho.png" width="900px"> 
+
 
 ---
 
