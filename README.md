@@ -14,6 +14,8 @@ Este repositório contém o material didático para implementação de uma **Pre
 
 # 📖 1. Introdução e Setup
 
+<img src="/figuras/rofDiagram.png" width="300px"> 
+
 Preparação do ambiente no Google Colab:
 
 ```python
@@ -301,17 +303,10 @@ Altere o número de neurônios ou trocar `relu` por `tanh` e observar o impacto 
 
 ## 📚 Referências Bibliográficas
 
-1. B. P. Lathi, *Modern Digital and Analog Communication Systems*, 3rd ed.  
-   New York, NY, USA: Oxford University Press, 1998.
-
-2. S. Haykin, *Communication Systems*, 4th ed.  
-   New York, NY, USA: John Wiley & Sons, 2001.
-
-3. D. A. Guimarães and R. A. A. de Souza, *Transmissão Digital: Princípios e Aplicações*, 1ª–2ª eds.  
-   São Paulo, Brasil: Editora Érica, 2012.
+[1] PEREIRA, L.A.M.; MENDES, L.L.; COX, Mitchell A.; CERQUEIRA S., Arismar. Open dataset initiative for machine learning-based linearization in analog radio over fiber systems. Optics Communications, v. 590, p. 131949, 2025. ISSN 0030-4018. DOI: 10.1016/j.optcom.2025.131949. Disponível em: https://www.sciencedirect.com/science/article/pii/S0030401825004778
 
 
-<img src="/figuras/rofDiagram.png" width="300px"> 
+
 
 Prof. Dr. Luiz Augusto Melo Pereira
 
