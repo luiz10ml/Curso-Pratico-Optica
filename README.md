@@ -297,3 +297,22 @@ print(f"Com DPD -> MER: {mer_com:.2f} dB | EVM: {evm_com:.2f}%")
 
 > 💡 **Exercicios para casa:**  
 Altere o número de neurônios ou trocar `relu` por `tanh` e observar o impacto no desempenho.
+
+
+## 📚 Referências Bibliográficas
+
+1. B. P. Lathi, *Modern Digital and Analog Communication Systems*, 3rd ed.  
+   New York, NY, USA: Oxford University Press, 1998.
+
+2. S. Haykin, *Communication Systems*, 4th ed.  
+   New York, NY, USA: John Wiley & Sons, 2001.
+
+3. D. A. Guimarães and R. A. A. de Souza, *Transmissão Digital: Princípios e Aplicações*, 1ª–2ª eds.  
+   São Paulo, Brasil: Editora Érica, 2012.
+
+
+<img src="/figuras/rofDiagram.png" width="300px"> 
+
+Prof. Dr. Luiz Augusto Melo Pereira
+
+luiz.melo@inatel.br
