@@ -124,7 +124,7 @@ def calcular_mer(simbolos_est, simbolos_ref):
 
 ---
 
-# 📊 4. Carregando os Coeficientes do Modelo Polinomial
+# 📊 5. Carregando os Coeficientes do Modelo Polinomial
 
 ```python
 # --- GERAÇÃO DE DADOS E CANAL (CENÁRIO SEM DPD) ---
@@ -146,7 +146,7 @@ print(f"Coeficientes carregados com sucesso!: {coef_mzm}")
 
 ```
 ---
-# 📊 5. Geração dos dados
+# 📊 6. Geração dos dados
 ```python
 # Vetores para armazenar o sinal completo
 sinal_tx_total = np.zeros(NUM_BLOCOS * K, dtype=complex)
@@ -171,7 +171,7 @@ sinal_recebido = canal_awgn(sinal_distorcido, SNR_DB, np.mean(np.abs(sinal_tx_to
 
 ---
 
-# 🤖 6. Arquitetura e Treinamento da Rede Neural (DPD)
+# 🤖 7. Arquitetura e Treinamento da Rede Neural (DPD)
 
 ```python
 X_train = np.c_[sinal_recebido.real, sinal_recebido.imag]
@@ -197,7 +197,7 @@ model_dpd.fit(
 
 ---
 
-# 🏁 7. Teste e Validação
+# 🏁 8. Teste e Validação
 
 ```python
 print("\n--- Avaliando Performance ---")
@@ -211,6 +211,8 @@ sinal_ofdm_teste *= np.sqrt(p_teste_lin / np.mean(np.abs(sinal_ofdm_teste)**2))
 
 # 1. Caso SEM DPD
 saida_sem_dpd = modelo_mzm(coef_mzm, sinal_ofdm_teste, J)
+energia_saida = np.mean(abs(saida_sem_dpd)**2)
+saida_sem_dpd = saida_sem_dpd*np.sqrt(np.mean(abs(sinal_ofdm_teste)**2)/energia_saida)
 
 # 2. Caso COM DPD
 sinal_entrada_mlp = np.c_[sinal_ofdm_teste.real, sinal_ofdm_teste.imag]
@@ -232,7 +234,7 @@ qam_com, evm_com, mer_com = processar_receptor(saida_com_dpd, qam_teste)
 ```
 
 ---
-# 🏁 8. Análise Espectral
+# 🏁 9. Análise Espectral
 
 ```python
 f_ref, p_ref = welch(sinal_ofdm_teste, fs=1.0, window='hann', nperseg=K, return_onesided=False)
@@ -247,7 +249,7 @@ f_plot = np.fft.fftshift(f_sem)
 ```
 
 ---
-# 🏁 9. Plotando os Resultados
+# 🏁 10. Plotando os Resultados
 
 ```python
 plt.figure(figsize=(12, 10))
