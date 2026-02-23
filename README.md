@@ -53,7 +53,7 @@ Como consequência, o sinal de saída não é uma cópia perfeita do sinal de en
 À direita, o mesmo sistema é representado por um **modelo polinomial sem memória**, que descreve a relação entre entrada e saída:
 
 <p align="center">
-  <img src="https://render.githubusercontent.com/render/math?math=z_n%20%3D%20%5Csum_%7Bj%3D0%7D%5E%7BJ-1%7D%20h_j%20%7Cv_n%7C%5E%7Bj%7D%20v_n">
+  <img src="https://latex.codecogs.com/svg.image?\large z_n=\sum_{j=0}^{J-1}h_j|v_n|^jv_n">
 </p>
 Onde:
 
