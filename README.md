@@ -18,7 +18,7 @@ Preparação do ambiente no Google Colab:
 
 ```python
 # Instalação da biblioteca de modulação
-!pip install ModulationPy
+!pip install ModulationPy -q
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -142,7 +142,7 @@ if not os.path.exists("coef"):
 # Carregamento dos dados
 coef_mzm = np.fromfile("coef", dtype=np.complex64)
 
-print(f"Coeficientes carregados com sucesso! Tamanho: {len(coef_mzm)}")
+print(f"Coeficientes carregados com sucesso!: {coef_mzm}")
 
 
 
