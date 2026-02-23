@@ -39,6 +39,19 @@ callback_dpd = tf.keras.callbacks.EarlyStopping(
 )
 ```
 
+# ⚙️ 2. Teste da GPU
+
+Preparação do ambiente no Google Colab:
+
+```python
+# %% Verificação da GPU
+device_name = tf.test.gpu_device_name()
+if device_name != '/device:GPU:0':
+  print('Connected without GPU Device')
+else: 
+  print('Connected with GPU Device')
+```
+
 ---
 
 # ⚙️ 2. Parâmetros do Sistema OFDM
