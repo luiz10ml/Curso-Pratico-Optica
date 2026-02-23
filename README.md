@@ -17,135 +17,78 @@ Este repositório contém o material didático para implementação de uma **Pre
 <img src="/figuras/rofDiagram.png" width="900px"> 
 
 
-O diagrama acima apresenta duas formas equivalentes de representar um sistema Radio-over-Fiber (RoF).
+## 📡 Representação Física vs. Modelo Matemático
 
-À esquerda, temos o sistema físico real, composto por:
+O diagrama acima apresenta **duas formas equivalentes** de representar um sistema **Radio-over-Fiber (RoF)**.
 
-Transmissor SDR (Tx)
+---
 
-Amplificador de potência (PA)
+### 🔬 Sistema Físico Real (Diagrama da Esquerda)
 
-Laser (LD)
+À esquerda, temos o sistema físico completo, composto por:
 
-Modulador Mach-Zehnder (MZM)
+- Transmissor SDR (Tx)  
+- Amplificador de Potência (PA)  
+- Laser (LD)  
+- Modulador Mach-Zehnder (MZM)  
+- Caminho Óptico  
+- Fotodiodo (PD)  
+- Receptor (Rx)  
 
-Caminho óptico
+O funcionamento ocorre da seguinte forma:
 
-Fotodiodo (PD)
+1. O transmissor gera o sinal elétrico.
+2. O sinal é amplificado pelo PA.
+3. O MZM converte o sinal elétrico em modulação óptica.
+4. O sinal óptico se propaga pelo enlace.
+5. O fotodiodo reconverte o sinal óptico para o domínio elétrico.
 
-Receptor (Rx)
+Durante esse processo surgem **não-linearidades**, principalmente associadas ao PA e ao MZM.  
+Como consequência, o sinal de saída não é uma cópia perfeita do sinal de entrada.
 
-Nesse arranjo, o sinal elétrico gerado pelo transmissor é amplificado e aplicado ao MZM, que converte o sinal elétrico em modulação óptica. Após propagação no domínio óptico, o fotodiodo reconverte o sinal para o domínio elétrico.
+---
 
-Durante esse processo, surgem não-linearidades, principalmente associadas ao PA e ao MZM. Como consequência, o sinal de saída não é uma réplica perfeita do sinal de entrada.
+### 📐 Modelo Matemático Equivalente (Diagrama da Direita)
 
-À direita, temos uma representação matemática equivalente do mesmo sistema.
+À direita, o mesmo sistema é representado por um **modelo polinomial sem memória**, que descreve a relação entre entrada e saída:
 
-Em vez de modelar cada bloco físico individualmente, todo o enlace RoF é representado por um modelo polinomial sem memória, da forma:
+\[
+z_n = \sum_{j=0}^{J-1} h_j |v_n|^j v_n
+\]
 
-𝑧
-𝑛
-=
-∑
-𝑗
-=
-0
-𝐽
-−
-1
-ℎ
-𝑗
-∣
-𝑣
-𝑛
-∣
-𝑗
-𝑣
-𝑛
-z
-n
-	​
+Onde:
 
-=
-j=0
-∑
-J−1
-	​
+- `v_n` → amostra de entrada  
+- `z_n` → amostra de saída  
+- `h_j` → coeficientes complexos do modelo  
+- `J` → ordem do polinômio  
 
-h
-j
-	​
+#### 📌 O que significa "sem memória"?
 
-∣v
-n
-	​
+Significa que a saída no instante `n` depende apenas da entrada naquele mesmo instante.  
+Não há dependência de amostras anteriores (`v_{n-1}`, `v_{n-2}`, etc.).
 
-∣
-j
-v
-n
-	​
+Se os coeficientes `h_j` forem corretamente estimados a partir de medições reais, esse modelo consegue reproduzir com alta fidelidade o comportamento do sistema físico completo.
 
+---
 
-onde:
+## 🎯 Por que usar um modelo em vez do sistema físico?
 
-𝑣
-𝑛
-v
-n
-	​
+Substituir o sistema físico por um modelo matemático traz vantagens fundamentais, especialmente em ambiente acadêmico:
 
- é a amostra de entrada do sistema
+- ✅ Permite gerar amostras ilimitadas sem laboratório  
+- ✅ Reduz drasticamente custos (equipamentos ópticos são caros)  
+- ✅ Garante reprodutibilidade total dos experimentos  
+- ✅ Facilita o treinamento de algoritmos de DPD  
+- ✅ Permite explorar diferentes níveis de não-linearidade alterando apenas os coeficientes  
 
-𝑧
-𝑛
-z
-n
-	​
+Em outras palavras:
 
- é a amostra de saída
+> O modelo substitui um sistema físico complexo por uma representação matemática compacta, viabilizando simulações, testes e desenvolvimento de algoritmos de forma rápida, controlada e acessível.
 
-ℎ
-𝑗
-h
-j
-	​
+É exatamente esse modelo que será utilizado neste curso para treinar uma rede neural MLP capaz de realizar a **Predistorção Digital (DPD)** e compensar os efeitos não-lineares do modulador.
 
- são os coeficientes complexos do modelo
-
-𝐽
-J é a ordem do polinômio
-
-“Sem memória” significa que a saída no instante 
-𝑛
-n depende apenas da entrada naquele mesmo instante — não há dependência de amostras passadas.
-
-Se os coeficientes 
-ℎ
-𝑗
-h
-j
-	​
-
- forem estimados corretamente a partir de medições reais, esse modelo consegue reproduzir com alta fidelidade o comportamento do sistema físico completo.
-
-🎯 Por que usar um modelo em vez do sistema físico?
-
-Modelar o sistema traz vantagens fundamentais, especialmente em ambiente acadêmico:
-
-Permite gerar amostras de saída ilimitadas sem necessidade de laboratório.
-
-Reduz drasticamente o custo, pois equipamentos ópticos são caros.
-
-Permite repetir experimentos com total controle e reprodutibilidade.
-
-Facilita o treinamento de algoritmos de Predistorção Digital (DPD).
-
-Permite explorar diferentes níveis de não-linearidade apenas alterando os coeficientes.
-
-Em outras palavras, o modelo substitui um sistema físico complexo por uma representação matemática compacta, viabilizando simulações, testes e desenvolvimento de algoritmos de forma rápida e acessível.
-
-É exatamente esse modelo que será utilizado neste curso para treinar uma rede neural MLP capaz de realizar a Predistorção Digital (DPD) e compensar os efeitos não-lineares do modulador.
+---
 
 
 Preparação do ambiente no Google Colab:
