@@ -27,6 +27,8 @@ from ModulationPy import QAMModem
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 from scipy.signal import welch
+import os
+
 
 # Early Stopping
 callback_dpd = tf.keras.callbacks.EarlyStopping(
@@ -112,28 +114,44 @@ def calcular_mer(simbolos_est, simbolos_ref):
 # 📊 4. Geração de Dados
 
 ```python
-filePath = "/content/coef"
-coef_mzm = np.fromfile(filePath, dtype=np.complex64)
+# --- GERAÇÃO DE DADOS E CANAL (CENÁRIO SEM DPD) ---
 
+
+# Link para o arquivo RAW no seu GitHub
+# Substitua 'SEU_USUARIO' e 'SEU_REPOSITORIO' pelos seus dados reais
+url_coef = "https://raw.githubusercontent.com/luiz10ml/Curso-Pratico-Optica/main/coeficientes/coef"
+
+
+# Faz o download do arquivo para o ambiente do Colab
+if not os.path.exists("coef"):
+    !wget {url_coef} -O coef
+
+# Carregamento dos dados
+coef_mzm = np.fromfile("coef", dtype=np.complex64)
+
+print(f"Coeficientes carregados com sucesso! Tamanho: {len(coef_mzm)}")
+
+
+
+# Vetores para armazenar o sinal completo
 sinal_tx_total = np.zeros(NUM_BLOCOS * K, dtype=complex)
 
 for i in range(NUM_BLOCOS):
-    p_tx_linear = 10**(np.random.randint(-5, 16)/10) * 1e-3
+    p_tx_dbm = np.random.randint(-5, 16)
+    p_tx_linear = 10**(p_tx_dbm/10) * 1e-3
+    
     indices = np.random.randint(0, MOD_ORDER, size=len(SUBPORT_ATIVAS))
-
     qam_norm, _ = modular_qam(indices, MOD_ORDER)
+    
     espectro_mapeado = mapear_ofdm(qam_norm, SUBPORT_ATIVAS, K)
     sinal_tempo = np.fft.ifft(espectro_mapeado) * np.sqrt(K)
-
+    
     escala = np.sqrt(p_tx_linear / np.mean(np.abs(sinal_tempo)**2))
     sinal_tx_total[i*K : (i+1)*K] = sinal_tempo * escala
 
+# Passagem pelo Modulador Não-Linear (MZM) e Canal
 sinal_distorcido = modelo_mzm(coef_mzm, sinal_tx_total, J)
-sinal_recebido = canal_awgn(
-    sinal_distorcido,
-    SNR_DB,
-    np.mean(np.abs(sinal_tx_total)**2)
-)
+sinal_recebido = canal_awgn(sinal_distorcido, SNR_DB, np.mean(np.abs(sinal_tx_total)**2))
 ```
 
 ---
