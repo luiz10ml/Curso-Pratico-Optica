@@ -420,7 +420,7 @@ print(f"Com DPD -> MER: {mer_com:.2f} dB | EVM: {evm_com:.2f}%")
 ---
 
 > 💡 **Exercicios para casa:**  
-Altere o número de neurônios ou trocar `relu` por `tanh` e observar o impacto no desempenho.
+Altere o número de neurônios ou trocar `relu` por `tanh`, `elu`, `selu`, `LeakyReLU` e observar o impacto no desempenho.
 
 
 ## 📚 Referências Bibliográficas
