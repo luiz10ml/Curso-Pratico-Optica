@@ -52,9 +52,8 @@ Como consequência, o sinal de saída não é uma cópia perfeita do sinal de en
 
 À direita, o mesmo sistema é representado por um **modelo polinomial sem memória**, que descreve a relação entre entrada e saída:
 
-$$
-z_n = \sum_{j=0}^{J-1} h_j \lvert v_n \rvert^j v_n
-$$
+<img src="/figuras/modelo.png" width="900px"> 
+
 Onde:
 
 - `v_n` → amostra de entrada  
