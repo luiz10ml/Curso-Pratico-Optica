@@ -179,7 +179,7 @@ y_train = np.c_[sinal_tx_total.real, sinal_tx_total.imag]
 
 model_dpd = Sequential([
     Dense(2048, activation='relu', input_shape=(2,)),
-    Dense(2048, activation='relu'),
+    Dense(1024, activation='relu'),
     Dense(2)
 ])
 
