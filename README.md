@@ -52,7 +52,7 @@ Como consequência, o sinal de saída não é uma cópia perfeita do sinal de en
 
 À direita, o mesmo sistema é representado por um **modelo polinomial sem memória**, que descreve a relação entre entrada e saída:
 
-<img src="/figuras/modelo.png" width="900px"> 
+<img src="/figuras/modelo.png" width="300px"> 
 
 Onde:
 
