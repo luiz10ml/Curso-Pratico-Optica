@@ -43,7 +43,7 @@ O funcionamento ocorre da seguinte forma:
 4. O sinal óptico se propaga pelo enlace.
 5. O fotodiodo reconverte o sinal óptico para o domínio elétrico.
 
-Durante esse processo surgem **não-linearidades**, principalmente associadas ao PA e ao MZM.  
+Durante esse processo surgem **não-linearidades**, principalmente associadas ao MZM.  
 Como consequência, o sinal de saída não é uma cópia perfeita do sinal de entrada.
 
 ---
@@ -52,9 +52,7 @@ Como consequência, o sinal de saída não é uma cópia perfeita do sinal de en
 
 À direita, o mesmo sistema é representado por um **modelo polinomial sem memória**, que descreve a relação entre entrada e saída:
 
-\[
-z_n = \sum_{j=0}^{J-1} h_j |v_n|^j v_n
-\]
+![equation](https://render.githubusercontent.com/render/math?math=z_n%20%3D%20%5Csum_%7Bj%3D0%7D%5E%7BJ-1%7D%20h_j%20%7Cv_n%7C%5E%7Bj%7D%20v_n)
 
 Onde:
 
