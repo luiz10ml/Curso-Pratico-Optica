@@ -237,6 +237,10 @@ Um **preambulo conhecido** é inserido no início do sinal transmitido, permitin
 
 Para estimar `h`, utilizamos a Equação Normal dos Mínimos Quadrados:
 
+```math
+\mathbf{h}=(\mathbf{V}^{H}\mathbf{V})^{-1}\mathbf{V}^{H}\mathbf{z}
+```
+
 <img src="/figuras/coeficientes.png" width="150px"> 
 
 
@@ -356,6 +360,58 @@ model_dpd.fit(
 ---
 
 # 🏁 8. Teste e Validação
+
+<img src="/figuras/dpd.png" width="900px"> 
+
+---
+
+## ✅ Uso da MLP Treinada como Predistorção Digital (DPD)
+
+Após o treinamento, a rede neural MLP deixa de ser apenas um “modelo” e passa a atuar como um **bloco de Predistorção Digital (DPD)** no transmissor.
+
+A ideia é aplicar a MLP **antes** do enlace RoF. Assim:
+
+1. O transmissor gera o sinal original (ideal).
+2. A MLP altera esse sinal propositalmente, inserindo uma **predistorção**.
+3. O sinal predistorcido entra no enlace RoF (PA + MZM + fibra + PD).
+4. O RoF distorce novamente o sinal.
+5. Como a predistorção foi projetada para ser “o contrário” da distorção do RoF, o resultado final fica próximo do ideal.
+
+Em termos simples:
+
+> A DPD “antecipa” a distorção que o RoF causaria e aplica uma distorção inversa no transmissor.
+
+---
+
+### 🎯 Intuição: distorções opostas se cancelam
+
+O RoF geralmente apresenta comportamento não linear, como:
+
+- **compressão** (reduz o ganho quando a potência aumenta)
+- variações de ganho e fase dependentes da amplitude
+
+A DPD faz o oposto:
+
+- se o RoF **comprime**, a DPD **expande**
+- se o RoF **expande**, a DPD **comprime**
+
+Ou seja, a DPD força o sinal a “entrar torto” no sistema para “sair reto”.
+
+---
+
+### 📌 Resposta Combinada: DPD + RoF ≈ Linear
+
+Quando colocamos a DPD em cascata com o RoF, temos:
+
+- **DPD Response**: curva “contrária” (compensa a não linearidade)
+- **RoF Response**: curva não linear original do enlace
+- **Linearized Response**: resposta final aproximadamente constante (linear)
+
+Em termos conceituais, o objetivo é que:
+
+```math
+\text{RoF}(\text{DPD}(v)) \approx G \cdot v
+
 
 ```python
 print("\n--- Avaliando Performance ---")
