@@ -466,7 +466,7 @@ A métrica **EVM (Error Vector Magnitude)** é uma das formas mais usadas para q
 A EVM RMS em porcentagem é calculada por:
 
 ```math
-\text{EVM}_{\text{RMS}}(\%)=100\sqrt{\frac{\sum_{m=0}^{M-1}\left | \hat{d}_m- d_m\right |^{2}_{2}}{\sum_{m=0}^{M-1}\left | d_m \right |^{2}_{2}}},
+\text{EVM}_{\text{RMS}}(\%)=100\sqrt{\frac{\sum_{m=0}^{M-1}\left | \hat{d}_m- d_m\right |^{2}}{\sum_{m=0}^{M-1}\left | d_m \right |^{2}}},
 ```
 
 ```python
