@@ -250,7 +250,7 @@ Onde:
 
 Essa solução minimiza o erro quadrático médio entre o modelo e o sistema real.
 
-
+---
 
 ```python
 # --- GERAÇÃO DE DADOS E CANAL (CENÁRIO SEM DPD) ---
@@ -331,7 +331,7 @@ A função custo usada no treinamento é o erro
 ```math
 J_e(\mathbf{w}) = \frac{1}{N}\left\|\mathbf{v} - \hat{\mathbf{v}}\right\|^2
 ```
-
+---
 
 ```python
 X_train = np.c_[sinal_recebido.real, sinal_recebido.imag]
@@ -405,11 +405,7 @@ Quando colocamos a DPD em cascata com o RoF, temos:
 - **RoF Response**: curva não linear original do enlace
 - **Linearized Response**: resposta final aproximadamente constante (linear)
 
-Em termos conceituais, o objetivo é que:
-
-```math
-\text{RoF}(\text{DPD}(v)) \approx G \cdot v
-
+---
 
 ```python
 print("\n--- Avaliando Performance ---")
