@@ -297,6 +297,40 @@ sinal_recebido = canal_awgn(sinal_distorcido, SNR_DB, np.mean(np.abs(sinal_tx_to
 
 # 🤖 7. Arquitetura e Treinamento da Rede Neural (DPD)
 
+<img src="/figuras/train.png" width="900px"> 
+
+
+Após obter o par de sinais **entrada sem distorção** e **saída distorcida** (já sincronizados no tempo), treinamos uma rede neural do tipo **MLP (Multi-Layer Perceptron)** para aprender a operação inversa da distorção.
+
+A ideia é simples:
+
+- **Entrada da MLP (features):** amostras do sinal **distorcido** no receptor  
+- **Saída desejada (labels):** amostras do sinal **original sem distorção** no transmissor
+
+Em outras palavras, a MLP recebe o sinal “estragado” (distorcido) e aprende a estimar qual era o sinal original antes do enlace RoF.
+
+Como os sinais são complexos, o processamento é feito separando:
+
+- Parte real (I)
+- Parte imaginária (Q)
+
+Assim, cada amostra complexa vira um vetor real de 2 dimensões:
+
+
+### 🎯 Função de Custo (Erro Quadrático Médio)
+
+Os coeficientes (pesos) da MLP são ajustados minimizando o **Erro Quadrático Médio (MSE)** entre:
+
+- o **label** (sinal original sem distorção), e
+- a **estimativa produzida pela MLP** na saída
+
+A função custo usada no treinamento é o erro
+
+```math
+J_e(\mathbf{w}) = \frac{1}{N}\left\|\mathbf{v} - \hat{\mathbf{v}}\right\|^2
+```
+
+
 ```python
 X_train = np.c_[sinal_recebido.real, sinal_recebido.imag]
 y_train = np.c_[sinal_tx_total.real, sinal_tx_total.imag]
