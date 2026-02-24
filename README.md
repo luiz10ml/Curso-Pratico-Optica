@@ -371,7 +371,7 @@ A ideia é aplicar a MLP **antes** do enlace RoF. Assim:
 
 1. O transmissor gera o sinal original (ideal).
 2. A MLP altera esse sinal propositalmente, inserindo uma **predistorção**.
-3. O sinal predistorcido entra no enlace RoF (PA + MZM + fibra + PD).
+3. O sinal predistorcido entra no enlace RoF (MZM + fibra + PD).
 4. O RoF distorce novamente o sinal.
 5. Como a predistorção foi projetada para ser “o contrário” da distorção do RoF, o resultado final fica próximo do ideal.
 
