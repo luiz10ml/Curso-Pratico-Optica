@@ -459,7 +459,11 @@ f_plot = np.fft.fftshift(f_sem)
 ---
 # 🏁 10. Plotando os Resultados
 
+### 📏 EVM (Error Vector Magnitude) — Interpretação Didática
 
+A métrica **EVM (Error Vector Magnitude)** é uma das formas mais usadas para quantificar a qualidade de um sinal modulado (ex.: QAM/OFDM). Ela mede **o quão distante** o símbolo recebido está do símbolo ideal (referência) na constelação.
+
+A EVM RMS em porcentagem é calculada por:
 
 ```math
 \text{EVM}_{\text{RMS}}(\%)=100\sqrt{\frac{\sum_{m=0}^{M-1}\left | \hat{d}_m- d_m\right |^{2}_{2}}{\sum_{m=0}^{M-1}\left | d_m \right |^{2}_{2}}},
